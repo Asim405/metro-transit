@@ -1,0 +1,425 @@
+================================================================================
+MetroTransit Live - Complete Setup Commands
+================================================================================
+
+All terminal commands needed to install dependencies and start the services.
+
+================================================================================
+PART 1: DATABASE SETUP
+================================================================================
+
+1. Open MySQL Command Line or MySQL Workbench
+
+2. Create and setup database:
+   
+   mysql -u root -p
+   
+   (Enter your MySQL password when prompted)
+   
+   Then run the database setup script:
+   
+   source path/to/database/database_setup.sql
+   
+   OR from command line directly:
+   
+   mysql -u root -p metro_transit_db < database/database_setup.sql
+
+3. Verify database creation:
+   
+   mysql -u root -p metro_transit_db -e "SHOW TABLES;"
+   
+   Expected tables:
+   - Users
+   - Stations
+   - Routes
+   - Schedules
+   - Bookings
+
+================================================================================
+PART 2: BACKEND SETUP
+================================================================================
+
+Step 1: Navigate to Backend Directory
+-----------------------------------------
+cd backend
+
+Step 2: Install Dependencies
+-----------------------------------------
+npm install
+
+(This installs: express, sequelize, mysql2, dotenv, cors, axios, etc.)
+
+Step 3: Create Environment File
+-----------------------------------------
+copy .env.example .env
+
+(Or manually create .env with these settings:)
+
+PORT=5000
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=root
+DB_NAME=metro_transit_db
+NODE_ENV=development
+
+Step 4: Start Backend Server
+-----------------------------------------
+npm start
+
+Expected Output:
+✓ Database connection established
+✓ Database models synchronized
+✓ Metro Transit Live Backend
+✓ Server running on http://localhost:5000
+
+Step 5: Test Backend Connection (in NEW terminal)
+-----------------------------------------
+curl http://localhost:5000/api/health
+
+Expected Response:
+{
+  "status": "OK",
+  "message": "Metro Transit Live Backend is running",
+  "timestamp": "..."
+}
+
+Step 6: Fetch Schedules
+-----------------------------------------
+curl http://localhost:5000/api/schedules
+
+Should return list of active schedules with all details.
+
+================================================================================
+PART 3: FRONTEND SETUP
+================================================================================
+
+Step 1: Navigate to Frontend Directory (in NEW terminal)
+-----------------------------------------
+cd frontend
+
+Step 2: Install Dependencies
+-----------------------------------------
+npm install
+
+(This installs: expo, react-native, react-navigation, axios, nativewind, etc.)
+Note: First install may take 5-10 minutes
+
+Step 3: Create Environment File
+-----------------------------------------
+copy .env.example .env
+
+(Or manually create .env with these settings:)
+
+For Android Emulator:
+REACT_APP_API_BASE_URL=http://10.0.2.2:5000
+
+For Physical Device (replace with your machine IP):
+REACT_APP_API_BASE_URL=http://192.168.x.x:5000
+
+Find your IP address:
+- Windows: ipconfig (look for IPv4 Address)
+- Mac/Linux: ifconfig (look for inet)
+
+Step 4: Start Expo Development Server
+-----------------------------------------
+npm start
+
+OR start directly on platform:
+
+For iOS:
+npm run ios
+
+For Android:
+npm run android
+
+For Web (browser):
+npm run web
+
+Step 5: Run App on Device
+-----------------------------------------
+Android Emulator:
+- Have Android emulator running before starting Expo
+- Press 'a' in terminal to run on Android emulator
+
+Physical Device:
+- Download and install "Expo Go" app from Play Store/App Store
+- Scan QR code shown in terminal with your phone
+
+iOS Simulator (Mac only):
+- Have Xcode and iOS simulator running
+- Press 'i' in terminal
+
+================================================================================
+PART 4: DEVELOPMENT COMMANDS
+================================================================================
+
+Database Commands:
+-------------------
+# View all tables
+mysql -u root -p metro_transit_db -e "SHOW TABLES;"
+
+# View Users
+mysql -u root -p metro_transit_db -e "SELECT * FROM Users;"
+
+# View Schedules
+mysql -u root -p metro_transit_db -e "SELECT * FROM Schedules;"
+
+# View Bookings
+mysql -u root -p metro_transit_db -e "SELECT * FROM Bookings;"
+
+# View Active Schedule View
+mysql -u root -p metro_transit_db -e "SELECT * FROM Active_Schedule_View;"
+
+# Check triggers
+mysql -u root -p metro_transit_db -e "SHOW TRIGGERS;"
+
+Backend Commands:
+-------------------
+# Start with nodemon (auto-restart on changes)
+npm run dev
+
+# Reload database from setup script
+mysql -u root -p metro_transit_db < ../database/database_setup.sql
+
+Frontend Commands:
+-------------------
+# Clear Expo cache
+expo start --clear
+
+# Reset node_modules
+rm -rf node_modules
+npm install
+
+# Test on specific platform
+npm run android    # Android
+npm run ios        # iOS
+npm run web        # Web browser
+
+================================================================================
+PART 5: TESTING API ENDPOINTS
+================================================================================
+
+Test 1: Health Check
+-------------------
+curl http://localhost:5000/api/health
+
+Test 2: Get All Schedules
+-------------------
+curl http://localhost:5000/api/schedules
+
+Test 3: Get Specific Schedule
+-------------------
+curl http://localhost:5000/api/schedules/1
+
+Test 4: Create Booking (ACID Transaction Test)
+-------------------
+curl -X POST http://localhost:5000/api/bookings/create \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": 1,
+    "schedule_id": 1,
+    "num_seats": 2,
+    "payment_amount": 30.00
+  }'
+
+Test 5: Get User Bookings
+-------------------
+curl http://localhost:5000/api/bookings/1
+
+Test 6: Register New User
+-------------------
+curl -X POST http://localhost:5000/api/users/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Alice Wonder",
+    "email": "alice@example.com",
+    "phone": "9876543214",
+    "password": "password123"
+  }'
+
+================================================================================
+PART 6: TROUBLESHOOTING COMMANDS
+================================================================================
+
+Check MySQL Status:
+-------------------
+# Windows (PowerShell)
+Get-Service | Where-Object {$_.Name -like "*mysql*"}
+
+# Mac/Linux
+brew services list | grep mysql
+
+Start MySQL (if stopped):
+-------------------
+# Windows
+net start MySQL80
+
+# Mac
+brew services start mysql
+
+# Linux
+sudo systemctl start mysql
+
+Kill Process on Port 5000:
+-------------------
+# Windows (PowerShell)
+Stop-Process -Id (Get-NetTCPConnection -LocalPort 5000).OwningProcess -Force
+
+# Mac/Linux
+lsof -ti:5000 | xargs kill -9
+
+Check Ports in Use:
+-------------------
+# Windows
+netstat -ano | findstr :5000
+
+# Mac/Linux
+lsof -i :5000
+
+Reset Everything:
+-------------------
+# 1. Stop all services (backend, frontend)
+
+# 2. Delete node_modules
+cd backend
+rm -rf node_modules package-lock.json
+cd ../frontend
+rm -rf node_modules package-lock.json
+
+# 3. Re-run database setup
+mysql -u root -p metro_transit_db < database/database_setup.sql
+
+# 4. Reinstall dependencies
+cd backend && npm install
+cd ../frontend && npm install
+
+# 5. Start fresh
+# Terminal 1:
+cd backend && npm start
+
+# Terminal 2:
+cd frontend && npm start
+
+================================================================================
+PART 7: COMPLETE STARTUP SEQUENCE
+================================================================================
+
+Quick Start (All at Once):
+-------------------
+
+Terminal 1 - Database Setup:
+$ mysql -u root -p metro_transit_db < database/database_setup.sql
+
+Terminal 2 - Backend:
+$ cd backend
+$ npm install (if first time)
+$ npm start
+
+Terminal 3 - Frontend:
+$ cd frontend
+$ npm install (if first time)
+$ npm start
+
+Then:
+- For Android: Press 'a' in Terminal 3
+- For iOS: Press 'i' in Terminal 3
+- For Web: Press 'w' in Terminal 3
+- For Physical Device: Scan QR code with Expo Go app
+
+================================================================================
+PART 8: MONITORING AND DEBUGGING
+================================================================================
+
+View Backend Logs:
+-------------------
+# Terminal 1 will show:
+✓ Database connection established
+✓ Database models synchronized
+✓ Server running on http://localhost:5000
+
+View Frontend Logs:
+-------------------
+# Terminal 2 will show Expo logs
+# Physical device logs appear here
+
+View Database Queries:
+-------------------
+# Enable Sequelize logging in backend/index.js
+# Change: logging: false
+# To: logging: console.log
+
+Real-time Database Monitoring:
+-------------------
+$ mysql -u root -p
+mysql> SELECT * FROM Schedules;
+mysql> SELECT * FROM Bookings;
+
+(Use WATCH command on Linux)
+$ watch -n 1 'mysql -u root -p metro_transit_db -e "SELECT * FROM Schedules;"'
+
+================================================================================
+PART 9: PRODUCTION CONSIDERATIONS
+================================================================================
+
+Before deploying to production:
+
+1. Update .env files with production credentials
+2. Use bcrypt for password hashing (currently disabled for testing)
+3. Implement JWT token authentication
+4. Enable HTTPS/SSL
+5. Set up proper error logging
+6. Use environment-specific database connections
+7. Implement rate limiting and request throttling
+8. Add comprehensive input validation
+9. Use connection pooling for database
+10. Implement API request signing/verification
+
+================================================================================
+PART 10: ADDITIONAL COMMANDS
+================================================================================
+
+Check Node Version:
+$ node --version
+
+Check npm Version:
+$ npm --version
+
+Check MySQL Version:
+$ mysql --version
+
+Update npm:
+$ npm install -g npm@latest
+
+Clear npm Cache:
+$ npm cache clean --force
+
+View Running Processes:
+# Windows
+Get-Process node
+
+# Mac/Linux
+ps aux | grep node
+
+View Package Versions:
+$ npm list
+
+Update All Dependencies:
+$ npm update
+
+Check for Vulnerabilities:
+$ npm audit
+$ npm audit fix
+
+================================================================================
+END OF SETUP COMMANDS
+================================================================================
+
+For detailed instructions, see README.md
+
+Quick Reference:
+1. Database: mysql -u root -p metro_transit_db < database/database_setup.sql
+2. Backend:  cd backend && npm install && npm start
+3. Frontend: cd frontend && npm install && npm start
+4. Test:     curl http://localhost:5000/api/health
+
+Good luck! 🚀

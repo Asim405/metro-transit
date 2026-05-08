@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "MetroTransit Live",
+    "slug": "metro-transit-live",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTabletMode": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "useNextNotificationFormat": true
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "nativewind/expo",
+        {
+          "input": "./global.css"
+        }
+      ]
+    ]
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "name": "metro-transit-live",
+  "version": "1.0.0",
+  "description": "Full-Stack Metro Transit Management System with 3NF Database, ACID Transactions, and React Native UI",
+  "main": "backend/index.js",
+  "scripts": {
+    "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "start:db": "mysql -u root -p metro_transit_db < database/database_setup.sql",
+    "start:backend": "cd backend && npm start",
+    "start:frontend": "cd frontend && npm start",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm start"
+  },
+  "keywords": [
+    "transit",
+    "metro",
+    "booking",
+    "react-native",
+    "express",
+    "sequelize",
+    "mysql",
+    "3nf",
+    "acid",
+    "transactions"
+  ],
+  "author": "Metro Transit Development Team",
+  "license": "Educational",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/metro-transit-live"
+  },
+  "projectStructure": {
+    "database": "MySQL 3NF schema with triggers and views",
+    "backend": "Express.js + Sequelize ORM with ACID transactions",
+    "frontend": "React Native (Expo) with NativeWind (Tailwind CSS)"
+  },
+  "features": {
+    "database": [
+      "3rd Normal Form (3NF) design",
+      "One-to-Many relationships",
+      "Many-to-Many relationships",
+      "Automatic seat deduction trigger",
+      "Database view for active schedules",
+      "SERIALIZABLE transaction isolation"
+    ],
+    "backend": [
+      "RESTful API endpoints",
+      "ACID transaction guarantee",
+      "Sequelize ORM with validation",
+      "Error handling and logging",
+      "CORS enabled"
+    ],
+    "frontend": [
+      "Minimalist professional UI",
+      "High contrast design",
+      "Real-time schedule fetching",
+      "Booking management",
+      "Bottom tab navigation",
+      "NativeWind (Tailwind CSS) styling"
+    ]
+  }
+}
